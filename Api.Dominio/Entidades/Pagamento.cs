@@ -4,30 +4,32 @@ namespace Api.Dominio.Entidade
 {
     public abstract class Pagamento
     {
-        public string Numero { get; set; }
-        public DateTime DataPagamento { get; set; }
-        public DateTime DataExpiracao { get; set; }
-        public decimal Total { get; set; }
-        public decimal TotalPagamento { get; set; }
-        public string Endereco { get; set; }
-        public string Documento { get; set; }
-        public string Propretario { get; set; }
-        public string Email { get; set; }
+        protected Pagamento(string numero, DateTime dataPagamento, DateTime dataExpiracao, decimal total, decimal totalPagamento, string endereco, string documento, string propretario, string email)
+        {
+            // O guid gera um código transforma em string => toString() => 
+            // retira os tracinhos => Replace("primeiro parametro que deseja retirar", "segundo parametro que ira entrar")
+            // pega as 10 primeiras posições => SubString(0,10)
+            // transforma tudo em maiusculo 
+            Numero = Guid.NewGuid().ToString().Replace("-","").Substring(0, 10).ToUpper();
+            DataPagamento = dataPagamento;
+            DataExpiracao = dataExpiracao;
+            Total = total;
+            TotalPagamento = totalPagamento;
+            Endereco = endereco;
+            Documento = documento;
+            Propretario = propretario;
+            Email = email;
+        }
 
-    }
-    public class PagamentoBoleto : Pagamento
-    {
-        public string CodigoDeBarras { get; set; }
-        public string NumeroBoleto { get; set; }
-    }
-    public class PagamentoCartaoDeCredito : Pagamento
-    {
-        public string NomeTitular { get; set; }
-        public string NumeroDoCartao { get; set; }
-        public string UltimaTransacao { get; set; }
-    }
-    public class PagamentoPayPal : Pagamento
-    {
-        public string CodigoDaTransicao { get; set; }       
+        public string Numero { get; private set; }
+        public DateTime DataPagamento { get; private  set; }
+        public DateTime DataExpiracao { get; private set; }
+        public decimal Total { get; private set; }
+        public decimal TotalPagamento { get; private set; }
+        public string Endereco { get; private set; }
+        public string Documento { get; private set; }
+        public string Propretario { get; private set; }
+        public string Email { get; private set; }
+
     }
 }
