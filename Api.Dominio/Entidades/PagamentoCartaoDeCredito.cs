@@ -6,8 +6,8 @@ namespace Api.Dominio.Entidade
     public class PagamentoCartaoDeCredito : Pagamento
     {
         // => a base é para pegar a referencia da classe pai, pois como a mesma é abstrata não pode ser referenciada
-        public PagamentoCartaoDeCredito(string nomeTitular, string numeroDoCartao, string ultimaTransacao, string numero, DateTime dataPagamento, DateTime dataExpiracao, decimal total, decimal totalPagamento, Endereco endereco, Documento documento, string propretario, Email email)
-            : base(numero, dataPagamento, dataExpiracao, total, totalPagamento, endereco, documento, propretario, email)
+        public PagamentoCartaoDeCredito(string nomeTitular, string numeroDoCartao, string ultimaTransacao, DateTime dataPagamento, DateTime dataExpiracao, decimal total, decimal totalPagamento, Endereco endereco, Documento documento, string propretario, Email email)
+            : base( dataPagamento, dataExpiracao, total, totalPagamento, endereco, documento, propretario, email)
         {
             NomeTitular = nomeTitular;
             NumeroDoCartao = numeroDoCartao;

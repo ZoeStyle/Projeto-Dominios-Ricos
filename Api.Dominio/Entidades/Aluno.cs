@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Api.Compartilhamento.Entidades;
 using Api.Dominio.ValorObjeto;
+using Flunt.Validations;
 
 // A classe construtor serve para falicitar a leitura do código nas outras classes
 // A função IList => Listar todas assinaturas/Aluno
@@ -39,13 +40,21 @@ namespace Api.Dominio.Entidade
 
         public void AdicionarAssinatura(Assinatura assinatura)
         {
-            // Percorre toda classe de assinaturas com os dados do aluno
-            // caso o aluno possua alguma assinatura cancela a mesma
-            foreach (var Ass in Assinaturas)
-                Ass.Desativar();
+            var AtivarAssinatura = false;
+            foreach (var ass in _assinaturas)
+            {
+                if (ass.Ativo)
+                    AtivarAssinatura = true;
+            }
+            
+            AddNotifications(new Contract()
+                .Requires()
+                .IsFalse(AtivarAssinatura, "Aluno.Assinaturas","Você ja tem uma assinatura ativa")    
+                .AreNotEquals(0,assinatura.Pagamentos.Count, "Aluno.Assinatura.Pagamento", "Essa assinatura não possui pagamento")
+            );
 
-            // Adiciona uma nova assinatura com os dados do cliente
-            _assinaturas.Add(assinatura);
+            if(Valid)
+                _assinaturas.Add(assinatura);
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Api.Compartilhamento.Entidades;
+using Flunt.Validations;
 
 // A classe construtor serve para falicitar a leitura do código nas outras classes
 // A função IList => Listar todas pagamentos/Assinatura
@@ -38,7 +39,11 @@ namespace Api.Dominio.Entidade
         public IReadOnlyCollection<Pagamento> Pagamentos { get { return _pagamento.ToArray(); } }
         // => Método responsável para adicionar o pagamento 
         public void AdicionarPagamento(Pagamento pagamento)
-        {
+        { 
+            AddNotifications(new Contract()
+                .Requires()
+                .IsGreaterThan(DateTime.Now, pagamento.DataPagamento, "Assinatura.pagamentos", "A data de pagamento deve ser futura")
+            );
             _pagamento.Add(pagamento);
         }
         // => Método que ativa a assinatura do aluno

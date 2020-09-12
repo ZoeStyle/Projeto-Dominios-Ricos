@@ -1,12 +1,13 @@
 using System;
 using Api.Compartilhamento.Entidades;
 using Api.Dominio.ValorObjeto;
+using Flunt.Validations;
 
 namespace Api.Dominio.Entidade
 {
     public abstract class Pagamento : Entidades
     {
-        protected Pagamento(string numero, DateTime dataPagamento, DateTime dataExpiracao, decimal total, decimal totalPagamento, Endereco endereco, Documento documento, string propretario, Email email)
+        protected Pagamento( DateTime dataPagamento, DateTime dataExpiracao, decimal total, decimal totalPagamento, Endereco endereco, Documento documento, string propretario, Email email)
         {
             // => O guid gera um código transforma em string => toString() => 
             // => retira os tracinhos => Replace("primeiro parametro que deseja retirar", "segundo parametro que ira entrar")
@@ -21,6 +22,12 @@ namespace Api.Dominio.Entidade
             Documento = documento;
             Propretario = propretario;
             Email = email;
+
+            AddNotifications(new Contract()
+                .Requires()
+                .IsLowerOrEqualsThan(0,total,"Pagamento.Total", "O pagamento não pode ser igaul a 0")
+                .IsGreaterOrEqualsThan(total, totalPagamento, "Pagamento.TotalPagamento", "O valor pago é menor que o valor do pagamento")
+            );
         }
         // => Tipo primitivo que gera o numero da transação do pagamento
         public string Numero { get; private set; }
