@@ -1,9 +1,17 @@
 using System;
+using Api.Compartilhamento.Comandos;
 using Api.Dominio.Enumerados;
+using Flunt.Notifications;
+using Flunt.Validations;
+
+// É muito importante sempre que possivel validar as informações pois  
+// sempre recebemos atraves de um command um json então validamos antes de passar para o repositorio
+// e no repostorio fazer uma segunda validação.
+// Mesmo que façamos varias validações, melhora para não estourar erro na aplicação
 
 namespace Api.Dominio.Comando
 {
-    public class ComandoCriarAssinaturaBoleto
+    public class ComandoCriarAssinaturaBoleto : Notifiable, IComando
     {
         #region Campos obrigatorios para criar o Aluno
 
@@ -51,9 +59,21 @@ namespace Api.Dominio.Comando
         
         #region Email da area de pagamento
         public string EmailPagamento { get; set; }
+
         #endregion
-        
+
         #endregion
+
+        public void Validate()
+        {
+            AddNotifications(new Contract()
+                .Requires()
+                .HasMinLen(PrimeiroNome, 3, "PrimeiroNome", "O Nome deve conter no minimo 3 caracteres")
+                .HasMinLen(UltimoNome, 3, "UltimoNome", "O Sobrenome deve conter no minimo 3 caracteres")
+                .HasMaxLen(PrimeiroNome, 20, "PrimeiroNome", "O Nome deve conter no minimo 3 caracteres")
+                .HasMaxLen(UltimoNome, 20, "PrimeiroNome", "O Sobrenome deve conter no minimo 3 caracteres")
+            );
+        }
 
     }
 }

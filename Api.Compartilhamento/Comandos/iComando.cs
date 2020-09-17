@@ -1,7 +1,7 @@
 namespace Api.Compartilhamento.Comandos
 {
-    public interface IComando
+    public interface IComando 
     {
-        
+        void Validate();        
     }
 }
