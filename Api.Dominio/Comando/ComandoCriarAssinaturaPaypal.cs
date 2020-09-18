@@ -1,9 +1,12 @@
 using System;
+using Api.Compartilhamento.Comandos;
 using Api.Dominio.Enumerados;
+using Flunt.Notifications;
+using Flunt.Validations;
 
 namespace Api.Dominio.Comando
 {
-    public class ComandoCriarAssinaturaPayPal
+    public class ComandoCriarAssinaturaPayPal : Notifiable, IComando
     {
         #region Campos obrigatorios para criar o Aluno
 
@@ -23,7 +26,7 @@ namespace Api.Dominio.Comando
         #endregion
 
         #region Criar Assinatura pagamento Paypal
-        
+
         #region Dados do pagamento
         public string CodigoDaTransicao { get; set; }
         public string NumeroPagamento { get; set; }
@@ -31,13 +34,13 @@ namespace Api.Dominio.Comando
         public DateTime DataExpiracao { get; set; }
         public decimal TotalPagamento { get; set; }
         #endregion
-        
+
         #region Documento do proprietario do documento
         public string NomePropretario { get; set; }
         public string ProprietarioDocumento { get; set; }
-        public ETipoDocumentos DocumentoProprietarioPagamento { get; set; }    
+        public ETipoDocumentos DocumentoProprietarioPagamento { get; set; }
         #endregion
-        
+
         #region Endereco de cobranca do pagamento
         public string Rua { get; set; }
         public string Numero { get; set; }
@@ -45,14 +48,24 @@ namespace Api.Dominio.Comando
         public string Bairro { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
-        public string CEP { get; set; } 
+        public string CEP { get; set; }
         #endregion
-        
+
         #region Email da area de pagamento
         public string EmailPagamento { get; set; }
         #endregion
-        
+
         #endregion
 
+        public void Validate()
+        {
+            AddNotifications(new Contract()
+                .Requires()
+                .HasMinLen(PrimeiroNome, 3, "PrimeiroNome", "O Nome deve conter no minimo 3 caracteres")
+                .HasMinLen(UltimoNome, 3, "UltimoNome", "O Sobrenome deve conter no minimo 3 caracteres")
+                .HasMaxLen(PrimeiroNome, 20, "PrimeiroNome", "O Nome deve conter no minimo 3 caracteres")
+                .HasMaxLen(UltimoNome, 20, "PrimeiroNome", "O Sobrenome deve conter no minimo 3 caracteres")
+            );
+        }
     }
 }

@@ -5,19 +5,23 @@ using Api.Dominio.Comando;
 using Api.Dominio.Entidade;
 using Api.Dominio.Enumerados;
 using Api.Dominio.Repositorio;
+using Api.Dominio.Servicos;
 using Api.Dominio.ValorObjeto;
 using Flunt.Notifications;
 
 namespace Api.Dominio.Cabecalho
 {
-    public class AssinaturaCabecalho :
-    Notifiable, ICabecalhos<ComandoCriarAssinaturaBoleto>
+    public class AssinaturaBoletoCabecalho :
+    Notifiable, 
+    ICabecalhos<ComandoCriarAssinaturaBoleto>
     {
         private readonly IAlunoRepositorio _repositorio;
+        private readonly IServicoEmail _emailRepositorio;
 
-        public AssinaturaCabecalho(IAlunoRepositorio repositorio)
+        public AssinaturaBoletoCabecalho(IAlunoRepositorio repositorio, IServicoEmail emailRepositorio)
         {
             _repositorio = repositorio;
+            _emailRepositorio = emailRepositorio;
         }
         public IResultadoComando Cabecalho(ComandoCriarAssinaturaBoleto comando)
         {
@@ -30,7 +34,7 @@ namespace Api.Dominio.Cabecalho
             }
             #endregion
 
-            #region Verifica se o domento já esta cadastrado
+            #region Verifica se o documento já esta cadastrado
             if (_repositorio.ExisteDocumento(comando.Documento))
                 AddNotification("Documento", "Este CPF já existe em uso");
             #endregion
@@ -46,29 +50,48 @@ namespace Api.Dominio.Cabecalho
             var email = new Email(comando.Email);
             var endereco = new Endereco(comando.Rua, comando.Numero, comando.Complemento, comando.Bairro, comando.Cidade, comando.Estado, comando.CEP);
             #endregion
-            
+
             #region Gerar as Entidades
             var aluno = new Aluno(nome, documento, email);
             var assinatura = new Assinatura(DateTime.Now.AddMonths(1));
-            // var pagamento = new PagamentoBoleto(comando.CodigoDeBarras)
-
+            var pagamento = new PagamentoBoleto(
+                    comando.CodigoDeBarras,
+                    comando.NumeroBoleto,
+                    comando.DataPagamento,
+                    comando.DataExpiracao,
+                    comando.Total,
+                    comando.TotalPagamento,
+                    endereco,
+                    documento,
+                    comando.ProprietarioDocumento,
+                    email);
             #endregion
 
-            #region Aplica as validações
+            #region Relacionamento
+            assinatura.AdicionarPagamento(pagamento);
+            aluno.AdicionarAssinatura(assinatura);
+            #endregion
 
+            #region Agrupar as validações
+            AddNotifications(nome, email, documento, endereco, aluno, assinatura, pagamento);
             #endregion
 
             #region Salvar as informações
-
+            _repositorio.CriarAssinatura(aluno);
             #endregion
 
             #region Enviar o email de boas vindas
-
+            _emailRepositorio.Enviar(
+                aluno.Nome.ToString(),
+                aluno.Email.Emdereco,
+                "Bem vindo a nosso site!",
+                "Sua assinatura foi criada com successo");
             #endregion
 
             #region Retornar informações
             return new ResultadoComando(true, "Assinatura realizada com sucesso");
             #endregion
         }
+
     }
 }
