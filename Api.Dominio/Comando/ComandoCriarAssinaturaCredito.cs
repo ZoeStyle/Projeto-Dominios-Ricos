@@ -26,7 +26,7 @@ namespace Api.Dominio.Comando
         #endregion
 
         #region Criar Assinatura pagamento Crédito
-        
+
         #region Dados do pagamento
         public string NomeTitular { get; set; }
         public string NumeroDoCartao { get; set; }
@@ -34,15 +34,16 @@ namespace Api.Dominio.Comando
         public string NumeroPagamento { get; set; }
         public DateTime DataPagamento { get; set; }
         public DateTime DataExpiracao { get; set; }
+        public decimal Total { get; set; }
         public decimal TotalPagamento { get; set; }
         #endregion
-        
+
         #region Documento do proprietario do documento
         public string NomePropretario { get; set; }
         public string ProprietarioDocumento { get; set; }
-        public ETipoDocumentos DocumentoProprietarioPagamento { get; set; }    
+        public ETipoDocumentos DocumentoProprietarioPagamento { get; set; }
         #endregion
-        
+
         #region Endereco de cobranca do pagamento
         public string Rua { get; set; }
         public string Numero { get; set; }
@@ -50,13 +51,13 @@ namespace Api.Dominio.Comando
         public string Bairro { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
-        public string CEP { get; set; } 
+        public string CEP { get; set; }
         #endregion
-        
+
         #region Email da area de pagamento
         public string EmailPagamento { get; set; }
         #endregion
-        
+
         #endregion
 
         public void Validate()
