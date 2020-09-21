@@ -32,6 +32,7 @@ namespace Api.Dominio.Comando
         public string NumeroPagamento { get; set; }
         public DateTime DataPagamento { get; set; }
         public DateTime DataExpiracao { get; set; }
+        public decimal Total { get; set; }
         public decimal TotalPagamento { get; set; }
         #endregion
 
