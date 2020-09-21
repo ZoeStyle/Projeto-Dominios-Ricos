@@ -85,6 +85,11 @@ namespace Api.Dominio.Cabecalho
             AddNotifications(nome, documento, email, endereco, aluno, assinatura, email);
             #endregion
 
+            #region Checar validações
+            if (Invalid)
+                return new ResultadoComando(false, "Não foi possivel realizar sua assinatura");
+            #endregion
+
             #region Salvar as informações
             _alunoRepositorio.CriarAssinatura(aluno);
             #endregion
